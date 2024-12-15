@@ -1,0 +1,32 @@
+﻿@model IEnumerable<Recipe_Organizer.Models.Recipe>
+
+@{
+    ViewData["Title"] = "Recipe List";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<a href="@Url.Action("Create", "Recipe")" class="btn btn-primary">Create New Recipe</a>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>Name</th>
+        <th>Preparing Time</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var recipe in Model)
+    {
+        <tr>
+            <td>@recipe.Name</td>
+            <td>@recipe.PreparingTime</td>
+            <td>
+                <a href="#">Edit</a> |
+                <a href="#">Delete</a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

@@ -1,0 +1,71 @@
+﻿@model Recipe_Organizer.Models.Recipe
+
+<form asp-action="Create">
+    <div class="form-group mb-4">
+        <label asp-for="Name" class="control-label"></label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+
+    <div class="form-group mb-4">
+        <label asp-for="Description" class="control-label"></label>
+        <textarea asp-for="Description" class="form-control"></textarea>
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+
+    <div>
+        <label class="mb-2">Ingredients</label>
+        <div id="IngredientsSection">
+            <div class="row" id="ingredientRow_0">
+                <div class="col-sm">
+                    <label>Name</label>
+                    <input type="text" name="Ingredients[0].Name" class="form-control mb-4" />
+                </div>
+                <div class="col-sm">
+                    <label>Quantity</label>
+                    <input type="number" name="Ingredients[0].Quantity" class="form-control mb-4" />
+                </div>
+            </div>
+        </div>
+        <button type="button" id="addIngredient" class="btn btn-primary mb-4">Add Ingredient</button>
+        <span asp-validation-for="Ingredients" class="text-danger"></span>
+    </div>
+
+    <div>
+        <label>Instructions</label>
+        <textarea name="Instructions" class="form-control mb-4"></textarea>    
+        <span asp-validation-for="Instructions" class="text-danger"></span>
+    </div>
+
+    <div class="form-group mb-4">
+        <label asp-for="PreparingTime" class="control-label"></label>
+        <input asp-for="PreparingTime" class="form-control" />
+        <span asp-validation-for="PreparingTime" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-success">Save Recipe</button>
+</form>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            var ingredientIndex = 1; 
+            
+                $('#addIngredient').click(function () {
+                    $('#IngredientsSection').append(`
+                        <div class="row" id="ingredientRow_${ingredientIndex}">
+                            <div class="col-sm">
+                                <label>Name</label>
+                                <input type="text" name="Ingredients[${ingredientIndex}].Name" class="form-control mb-4" />
+                            </div>
+                            <div class="col-sm">
+                                <label>Quantity</label>
+                                <input type="number" name="Ingredients[${ingredientIndex}].Quantity" class="form-control mb-4" />
+                            </div>
+                        </div>
+                    `);
+                    ingredientIndex++;
+                });
+        });
+    </script>
+}
