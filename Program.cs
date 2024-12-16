@@ -18,6 +18,13 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<RecipeDbContext>();
+    context.Database.Migrate();
+    RecipeDbContext.Seed(context);
+}
+
 app.UseHttpsRedirection();
 app.UseRouting();
 

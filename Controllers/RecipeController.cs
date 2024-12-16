@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using RecipeOrganizatorMVC.Common;
 using RecipeOrganizatorMVC.Models;
 
@@ -16,12 +17,38 @@ public class RecipeController : Controller
         _context = context;
     }
 
-    public IActionResult Index()
+    public ActionResult Index(string searchQuery, string cuisineFilter, string difficultyFilter)
     {
-        List<Recipe> recipes = _context.Recipes
-            .ToList();
+        var filteredRecipes = _context.Recipes.AsQueryable();
+        ViewBag.CuisineFilter = _context.Recipes.Select(r => r.Cuisine).Distinct().ToList();
+        ViewBag.DifficultyFilter = new SelectList(Enum.GetNames(typeof(RecipeDifficulty)));
 
-        return View(recipes);
+        string selectedDifficulty = Request.Query["difficultyFilter"].FirstOrDefault()!;
+        string selectedCuisine = Request.Query["cuisineFilter"].FirstOrDefault()!;
+        ViewBag.SelectedDifficulty = selectedDifficulty;
+        ViewBag.SelectedCuisine = selectedCuisine;
+        if (!string.IsNullOrEmpty(searchQuery))
+        {
+            filteredRecipes = filteredRecipes.Where(r =>
+                r.Name.Contains(searchQuery) ||
+                r.Description!.Contains(searchQuery) ||
+                r.Cuisine.Contains(searchQuery));
+        }
+
+        if (!string.IsNullOrEmpty(cuisineFilter))
+        {
+            filteredRecipes = filteredRecipes.Where(r => r.Cuisine == cuisineFilter);
+        }
+
+        if (!string.IsNullOrEmpty(difficultyFilter))
+        {
+            if (Enum.TryParse(difficultyFilter, out RecipeDifficulty difficulty))
+            {
+                filteredRecipes = filteredRecipes.Where(r => r.Difficulty == difficulty);
+            }
+        }
+
+        return View(filteredRecipes.ToList());
     }
 
 

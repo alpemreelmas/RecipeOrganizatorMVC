@@ -1,65 +1,85 @@
 ﻿@model IEnumerable<RecipeOrganizatorMVC.Models.Recipe>
 
-<div class="container">
-    <h2 class="mb-4">Recipe Organizer</h2>
+<div class="container mt-4">
+    <h2 class="text-center">Recipe Search and Filter</h2>
 
-    <p>
-        <a asp-action="Create" class="btn btn-primary">Create New Recipe</a>
-    </p>
+    <!-- Search and Filter Form -->
+    <form method="get" class="mb-4">
+        <div class="row g-3">
+            <div class="col-md-4">
+                <input type="text" name="searchQuery" value="@Context.Request.Query["searchQuery"]" class="form-control" placeholder="Search recipes..." />
+            </div>
+            <div class="col-md-3">
+                <select name="cuisineFilter" class="form-select">
+                    <option value="">All Cuisines</option>
+                    @foreach (var cuisine in ViewBag.CuisineFilter)
+                    {
+                        <!option value="@cuisine" @(ViewBag.SelectedCuisine == cuisine ? "selected" : "")>@cuisine</!option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-3">
+                <select name="difficultyFilter" class="form-select">
+                    <option value="">All Difficulties</option>
+                    @foreach (var difficulty in ViewBag.DifficultyFilter as SelectList)
+                    {
+                        <!option value="@difficulty.Value"
+                                 @(ViewBag.SelectedDifficulty == difficulty.Value ? "selected" : "")>
+                            @difficulty.Text
+                        </!option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary w-100">Search</button>
+            </div>
+        </div>
+    </form>
 
-    <table class="table table-striped">
-        <thead>
-        <tr>
-            <th>Image</th>
-            <th>Recipe Name</th>
-            <th>Ingredients</th>
-            <th>Cuisine</th>
-            <th>Cooking Time</th>
-            <th>Difficulty</th>
-            <th>Actions</th>
-        </tr>
+    <!-- Results Table -->
+    <table class="table table-bordered table-striped table-hover">
+        <thead class="table-dark">
+            <tr>
+                <th>#</th>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Cuisine</th>
+                <th>Cooking Time</th>
+                <th>Difficulty</th>
+                <th>Actions</th>
+            </tr>
         </thead>
         <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    <img src="@item.ImageUrl" alt="@item.Name" class="img-thumbnail" style="max-width: 100px;"/>
-                </td>
-                <td>@item.Name</td>
-                <td>@item.Cuisine</td>
-                <td>@item.Ingredients</td>
-                <td>@item.CookingTime mins</td>
-                <td>
-                    <span class="badge @GetDifficultyBadgeClass(item.Difficulty)">
-                        @item.Difficulty
-                    </span>
-                </td>
-                <td>
-                    <div class="btn-group" role="group">
-                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning" style="margin-right: 10px">Edit</a>
-                        <form asp-action="Delete" asp-route-id="@item.Id" method="post" onsubmit="return confirm('Are you sure you want to delete this recipe?');">
-                            <button type="submit" class="btn btn-sm btn-danger">Delete</button>
-                        </form>
-                    </div>
-                </td>
-            </tr>
-        }
+            @if (Model.Any())
+            {
+                int count = 1;
+                foreach (var recipe in Model)
+                {
+                    <tr>
+                        <td>@count</td>
+                        <td>@recipe.Name</td>
+                        <td>@recipe.Description</td>
+                        <td>@recipe.Cuisine</td>
+                        <td>@recipe.CookingTime minutes</td>
+                        <td>@recipe.Difficulty</td>
+                        <td>
+                            <div class="btn-group" role="group">
+                                <a asp-action="Edit" asp-route-id="@recipe.Id" class="btn btn-sm btn-warning" style="margin-right: 10px">Edit</a>
+                                <form asp-action="Delete" asp-route-id="@recipe.Id" method="post" onsubmit="return confirm('Are you sure you want to delete this recipe?');">
+                                    <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    count++;
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="6" class="text-center">No recipes found.</td>
+                </tr>
+            }
         </tbody>
     </table>
 </div>
-
-@functions {
-
-    private string GetDifficultyBadgeClass(RecipeDifficulty difficulty)
-    {
-        return difficulty switch
-        {
-            RecipeDifficulty.Easy => "bg-success",
-            RecipeDifficulty.Medium => "bg-warning",
-            RecipeDifficulty.Hard => "bg-danger",
-            _ => "bg-secondary"
-            };
-    }
-
-}
