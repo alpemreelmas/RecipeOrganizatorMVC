@@ -44,9 +44,17 @@ public class RecipeController : Controller
         return View(recipe);
     }
 
+    [HttpGet]
     public IActionResult Create()
     {
         return View();
+    }
+
+    [HttpGet]
+    public IActionResult Edit(Guid id)
+    {
+        var recipe = _context.Recipes.Find(id);
+        return View(recipe);
     }
 
     [HttpPost]
@@ -61,8 +69,10 @@ public class RecipeController : Controller
                 return NotFound();
             }
 
-            // Update existing recipe properties
             existingRecipe.Name = recipe.Name;
+            existingRecipe.Description = recipe.Description;
+            existingRecipe.Ingredients = recipe.Ingredients;
+            existingRecipe.Instructions = recipe.Instructions;
             existingRecipe.Cuisine = recipe.Cuisine;
             existingRecipe.CookingTime = recipe.CookingTime;
             existingRecipe.Difficulty = recipe.Difficulty;
@@ -77,7 +87,7 @@ public class RecipeController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public ActionResult Delete(int id)
+    public ActionResult Delete(Guid id)
     {
         var recipe = _context.Recipes.Find(id);
         if (recipe == null)

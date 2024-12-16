@@ -1,0 +1,67 @@
+﻿# Visual Studio ile ilgili dosyalar
+.vs/
+*.user
+*.suo
+*.sln.docstates
+*.VC.db
+
+# Build çıktıları
+bin/
+obj/
+*.dll
+*.exe
+*.appx
+*.appxbundle
+*.msix
+*.msixbundle
+
+# ASP.NET cache dosyaları
+_ClientBin/
+
+# User-specific dosyalar
+*.rsuser
+*.rsbo
+
+# Paketler
+packages/
+*.nupkg
+*.snupkg
+project.lock.json
+project.fragment.lock.json
+
+# DotNet restore dosyaları
+project.assets.json
+project.nuget.cache
+*.nuspec
+*.nuproj
+*.lock.json
+
+# MacOS ve diğer işletim sistemine özel dosyalar
+.DS_Store
+Thumbs.db
+
+# Log dosyaları
+*.log
+
+# Yedekleme dosyaları
+*.bak
+*.swp
+*.tmp
+*.temp
+
+# Config dosyaları (isteğe bağlı, hassas verileri korumak için dahil edilmez)
+appsettings.json
+appsettings.*.json
+web.config
+*.config
+
+# Publish edilen dosyalar
+publish/
+wwwroot/
+
+# Rider ile ilgili dosyalar (JetBrains IDE'leri için)
+.idea/
+*.iml
+
+# Visual Studio Code ile ilgili dosyalar
+.vscode/
