@@ -1,8 +1,6 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Recipe_Organizer.Common;
-using Recipe_Organizer.Models;
+using RecipeOrganizatorMVC.Common;
 using RecipeOrganizatorMVC.Models;
 
 namespace RecipeOrganizatorMVC.Controllers;
@@ -25,20 +23,24 @@ public class RecipeController : Controller
 
         return View(recipes);
     }
-    
-    
+
+
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create(Recipe recipe, List<Ingredients> ingredients)
+    public async Task<IActionResult> Create(Recipe recipe)
     {
         if (ModelState.IsValid)
         {
-            _context.Recipes.Add(recipe);
-            await _context.SaveChangesAsync();
+            if (string.IsNullOrEmpty(recipe.ImageUrl))
+            {
+                recipe.ImageUrl = $"https://via.placeholder.com/150?text={Uri.EscapeDataString(recipe.Name)}";
+            }
 
+            _context.Recipes.Add(recipe);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+
         return View(recipe);
     }
 
@@ -46,11 +48,62 @@ public class RecipeController : Controller
     {
         return View();
     }
-    
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public ActionResult Edit(Recipe recipe)
+    {
+        if (ModelState.IsValid)
+        {
+            var existingRecipe = _context.Recipes.Find(recipe.Id);
+            if (existingRecipe == null)
+            {
+                return NotFound();
+            }
+
+            // Update existing recipe properties
+            existingRecipe.Name = recipe.Name;
+            existingRecipe.Cuisine = recipe.Cuisine;
+            existingRecipe.CookingTime = recipe.CookingTime;
+            existingRecipe.Difficulty = recipe.Difficulty;
+            existingRecipe.ImageUrl = recipe.ImageUrl;
+
+            _context.SaveChanges();
+            return RedirectToAction("Index");
+        }
+
+        return View(recipe);
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public ActionResult Delete(int id)
+    {
+        var recipe = _context.Recipes.Find(id);
+        if (recipe == null)
+        {
+            return NotFound();
+        }
+
+        _context.Recipes.Remove(recipe);
+        _context.SaveChanges();
+        return RedirectToAction("Index");
+    }
+
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()
     {
         return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+    }
+
+    protected override void Dispose(bool disposing)
+    {
+        if (disposing)
+        {
+            _context.Dispose();
+        }
+
+        base.Dispose(disposing);
     }
 }

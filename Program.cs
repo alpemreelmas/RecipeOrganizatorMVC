@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using Recipe_Organizer.Common;
+using RecipeOrganizatorMVC.Common;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,12 +26,7 @@ app.UseAuthorization();
 app.MapStaticAssets();
 
 app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}")
-    .WithStaticAssets();
-
-app.MapControllerRoute(
-        name: "recipeRoute",
+        name: "default",
         pattern: "{controller=Recipe}/{action=Index}/{id?}")
     .WithStaticAssets();
 

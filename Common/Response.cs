@@ -1,6 +1,5 @@
-﻿namespace Recipe_Organizer.Common;
+﻿namespace RecipeOrganizatorMVC.Common;
 
 public class Response
 {
-    
 }

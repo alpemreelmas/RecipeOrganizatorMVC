@@ -1,4 +1,4 @@
-﻿namespace Recipe_Organizer.Common;
+﻿namespace RecipeOrganizatorMVC.Common;
 
 public abstract class BaseEntity
 {

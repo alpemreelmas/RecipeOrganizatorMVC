@@ -1,25 +1,23 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Recipe_Organizer.Models;
-    
-namespace Recipe_Organizer.Common;
+using RecipeOrganizatorMVC.Models;
 
+namespace RecipeOrganizatorMVC.Common;
 
 public class RecipeDbContext : DbContext
 {
     public DbSet<Recipe> Recipes { get; set; }
-    public DbSet<Ingredients> Ingredients { get; set; }
-    
+
     public RecipeDbContext(DbContextOptions<RecipeDbContext> options) : base(options)
     {
     }
-    
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
 
         modelBuilder.Entity<Recipe>().ToTable("Recipes");
     }
-    
+
     public override int SaveChanges()
     {
         AddTimestamps();
@@ -40,6 +38,7 @@ public class RecipeDbContext : DbContext
                 ((BaseEntity)entity.Entity).CreatedAt = now;
                 ((BaseEntity)entity.Entity).Id = Guid.NewGuid();
             }
+
             ((BaseEntity)entity.Entity).UpdatedAt = now;
         }
     }
